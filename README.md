@@ -1,16 +1,42 @@
-# quiz_app
+# Quiz Master - Aplikasi Kuis Berbasis Flutter
 
-A new Flutter project.
+## Identitas
 
-## Getting Started
+* **Nama:** Muhammad Aryasatya
+* **NIM:** 231401094
+* **Lab:** 2
 
-This project is a starting point for a Flutter application.
+## Deskripsi Aplikasi
 
-A few resources to get you started if this is your first Flutter project:
+Aplikasi ini adalah kuis pilihan ganda yang dibuat menggunakan Flutter sebagai pemenuhan tugas. Aplikasi ini menerapkan semua kriteria wajib dan opsional, termasuk:
+* State Management (Provider) untuk menjaga progres saat rotasi.
+* Dual-Theme (Light & Dark Mode) yang bisa di-toggle.
+* Desain Adaptif & Responsif (tampilan 1 kolom di HP dan 2 kolom di tablet).
+* Navigasi antar halaman dengan data passing.
+* Widget terpisah (reusable) dan struktur folder yang rapi.
+* Riwayat commit semantik.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Screenshot/Video Aplikasi
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+*(Catatan: Anda harus mengambil screenshot, menambahkannya ke folder di repository ini (misal: buat folder `screenshots/`), lalu ganti `LINK_KE_SCREENSHOT_ANDA` di bawah dengan path yang benar, contoh: `screenshots/welcome_light.png`)*
+
+**Light Mode**
+| Welcome Screen | Quiz Screen (HP) | Quiz Screen (Tablet) | Score Screen |
+| :---: | :---: | :---: | :---: |
+| ![Welcome Light](screenshot/welcome-putih.png) | ![Quiz Light](screenshot/quiz-putih.png) | ![Quiz Tablet Light](screenshot/quiz-tablet.png) | ![Score Light](screenshot/score-tablet.png) |
+
+**Dark Mode**
+| Welcome Screen | Quiz Screen (HP) |
+| :---: | :---: |
+| ![Welcome Dark](screenshot/welcome-hitam.png) | ![Quiz Dark](screenshot/quiz-hitam.png) |
+
+## Link Mockup/Prototype Aplikasi
+
+Desain dan inspirasi visual aplikasi ini didasarkan pada *case study* Behance berikut :
+
+* **Link:** [Quiz Master AI-Powered Quiz App Case Study](https://www.behance.net/gallery/230564500/Quiz-Master-AI-Powered-Quiz-App-Case-Study)
+
+## Credit ke Sumber-sumber Aset
+
+* **Desain:** [Quiz Master AI by Ravindra Kumar](https://www.behance.net/gallery/230564500/Quiz-Master-AI-Powered-Quiz-App-Case-Study) (di Behance)
+* **Font:** [Urbanist](https://fonts.google.com/specimen/Urbanist) (dari Google Fonts)
