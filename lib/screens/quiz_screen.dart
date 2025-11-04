@@ -1,16 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/core/app_colors.dart';
 import 'package:quiz_app/data/dummy_questions.dart';
+import 'package:quiz_app/models/question_model.dart';
 import 'package:quiz_app/widgets/answer_option_card.dart';
 import 'package:quiz_app/widgets/custom_button.dart';
 
-class QuizScreen extends StatelessWidget {
+class QuizScreen extends StatefulWidget {
   const QuizScreen({Key? key}) : super(key: key);
 
   @override
+  _QuizScreenState createState() => _QuizScreenState();
+}
+
+class _QuizScreenState extends State<QuizScreen> {
+  int _currentQuestionIndex = 0;
+  int? _selectedAnswerIndex;
+  int _score = 0;
+
+  void _selectAnswer(int index) {
+    setState(() {
+      _selectedAnswerIndex = index;
+    });
+  }
+
+  void _nextQuestion() {
+    if (_selectedAnswerIndex != null) {
+      final Question currentQuestion = dummyQuestions[_currentQuestionIndex];
+      if (_selectedAnswerIndex == currentQuestion.correctAnswerIndex) {
+        _score++;
+      }
+
+      if (_currentQuestionIndex < dummyQuestions.length - 1) {
+        // Pindah ke pertanyaan berikutnya
+        setState(() {
+          _currentQuestionIndex++;
+          _selectedAnswerIndex = null; // Reset pilihan
+        });
+      } else {
+        // Kuis Selesai
+        print('Kuis Selesai! Skor: $_score');
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Silakan pilih satu jawaban!'),
+          backgroundColor: AppColors.incorrect,
+        ),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final question = dummyQuestions[0];
-    const int currentQuestion = 1;
+    final Question question = dummyQuestions[_currentQuestionIndex];
     final int totalQuestions = dummyQuestions.length;
 
     return Scaffold(
@@ -29,9 +71,8 @@ class QuizScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Progress
             Text(
-              'Pertanyaan $currentQuestion dari $totalQuestions',
+              'Pertanyaan ${_currentQuestionIndex + 1} dari $totalQuestions',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Urbanist',
@@ -41,11 +82,10 @@ class QuizScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            // Linear Progress Indicator
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: LinearProgressIndicator(
-                value: currentQuestion / totalQuestions,
+                value: (_currentQuestionIndex + 1) / totalQuestions,
                 minHeight: 10,
                 backgroundColor: Colors.grey.shade300,
                 valueColor: const AlwaysStoppedAnimation(AppColors.primary),
@@ -53,7 +93,6 @@ class QuizScreen extends StatelessWidget {
             ),
             const SizedBox(height: 32),
 
-            // Teks Pertanyaan
             Text(
               question.text,
               textAlign: TextAlign.center,
@@ -65,24 +104,24 @@ class QuizScreen extends StatelessWidget {
             ),
             const SizedBox(height: 32),
 
-            // Pilihan Jawaban
             ...List.generate(question.options.length, (index) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12.0),
-                child: AnswerOptionCard(
-                  optionText: question.options[index],
-                  isSelected: index == 0,
+                child: GestureDetector(
+                  onTap: () => _selectAnswer(index),
+                  child: AnswerOptionCard(
+                    optionText: question.options[index],
+                    isSelected: _selectedAnswerIndex == index,
+                  ),
                 ),
               );
             }),
 
             const Spacer(),
 
-            // Tombol Next
             CustomButton(
-              text: 'Selanjutnya',
-              onPressed: () {
-              },
+              text: (_currentQuestionIndex == totalQuestions - 1) ? 'Selesai' : 'Selanjutnya',
+              onPressed: _nextQuestion,
             ),
           ],
         ),

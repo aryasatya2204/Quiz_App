@@ -2,12 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/core/app_colors.dart';
 import 'package:quiz_app/widgets/custom_button.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
 
   @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  final TextEditingController _nameController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // (Nantinya ini akan diatur oleh ThemeProvider)
     final bool isDarkMode = false;
     final Color textColor = isDarkMode ? AppColors.textDark : AppColors.textLight;
 
@@ -42,9 +54,8 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 48),
 
-              // pengganti Login/Signup
-              // Sesuai kriteria: "memasukkan nama"
               TextField(
+                controller: _nameController,
                 decoration: InputDecoration(
                     hintText: 'Masukkan Namamu',
                     filled: true,
@@ -66,12 +77,22 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // Menggunakan reusable widget
               CustomButton(
                 text: 'Mulai Kuis',
                 onPressed: () {
-                  // Logika navigasi akan ditambahkan di modul berikutnya
-                  print('Tombol Mulai Kuis Ditekan');
+                  final String playerName = _nameController.text;
+                  if (playerName.isNotEmpty) {
+                    print('Nama Pemain: $playerName');
+                    // (Navigasi)
+                  } else {
+                    // Tampilkan pesan error jika nama kosong
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Nama tidak boleh kosong!'),
+                        backgroundColor: AppColors.incorrect,
+                      ),
+                    );
+                  }
                 },
               ),
             ],
