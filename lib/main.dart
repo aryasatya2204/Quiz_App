@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app/screens/welcome_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import 'core/app_colors.dart';
 import 'package:quiz_app/config/app_routes.dart';
+import 'package:quiz_app/providers/quiz_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => QuizProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

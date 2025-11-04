@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/core/app_colors.dart';
 import 'package:quiz_app/widgets/custom_button.dart';
 import 'package:quiz_app/config/app_routes.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_app/providers/quiz_provider.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -82,12 +84,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 text: 'Mulai Kuis',
                 onPressed: () {
                   final String playerName = _nameController.text;
-                  if (playerName.isNotEmpty) {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.quiz,
-                      arguments: playerName,
-                    );
+                  if (playerName.trim().isNotEmpty) {
+                    final quizProvider = context.read<QuizProvider>();
+                    quizProvider.resetQuiz();
+                    quizProvider.setPlayerName(playerName);
+                    Navigator.pushNamed(context, AppRoutes.quiz);
                   } else {
                     // Tampilkan pesan error jika nama kosong
                     ScaffoldMessenger.of(context).showSnackBar(

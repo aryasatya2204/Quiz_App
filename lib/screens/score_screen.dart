@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app/core/app_colors.dart';
-import 'package:quiz_app/widgets/custom_button.dart';
+import 'package:provider/provider.dart';
 import 'package:quiz_app/config/app_routes.dart';
+import 'package:quiz_app/core/app_colors.dart';
+import 'package:quiz_app/providers/quiz_provider.dart';
+import 'package:quiz_app/widgets/custom_button.dart';
 
 class ScoreScreen extends StatelessWidget {
   const ScoreScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Data skor statis
-    const int score = 8;
-    const int totalQuestions = 10;
-    const String playerName = "User";
+    final quizProvider = context.watch<QuizProvider>();
+    final int score = quizProvider.score;
+    final int totalQuestions = quizProvider.totalQuestions;
+    final String playerName = quizProvider.playerName ?? 'Pemain';
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -43,7 +45,6 @@ class ScoreScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // Tampilan Skor
               Text(
                 '$score/$totalQuestions',
                 textAlign: TextAlign.center,
@@ -57,10 +58,10 @@ class ScoreScreen extends StatelessWidget {
 
               const SizedBox(height: 48),
 
-              // Tombol Main Lagi
               CustomButton(
                 text: 'Main Lagi',
                 onPressed: () {
+                  //akan mereset histori navigasi dan kembali ke awal.
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     AppRoutes.welcome,

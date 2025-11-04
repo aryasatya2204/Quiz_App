@@ -1,71 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_app/config/app_routes.dart';
 import 'package:quiz_app/core/app_colors.dart';
-import 'package:quiz_app/data/dummy_questions.dart';
-import 'package:quiz_app/models/question_model.dart';
+import 'package:quiz_app/providers/quiz_provider.dart';
 import 'package:quiz_app/widgets/answer_option_card.dart';
 import 'package:quiz_app/widgets/custom_button.dart';
-import 'package:quiz_app/config/app_routes.dart';
 
-
-class QuizScreen extends StatefulWidget {
+class QuizScreen extends StatelessWidget {
   const QuizScreen({Key? key}) : super(key: key);
 
   @override
-  _QuizScreenState createState() => _QuizScreenState();
-
-}
-
-class _QuizScreenState extends State<QuizScreen> {
-  int _currentQuestionIndex = 0;
-  int? _selectedAnswerIndex;
-  int _score = 0;
-  String? playerName;
-
-  void _selectAnswer(int index) {
-    setState(() {
-      _selectedAnswerIndex = index;
-    });
-  }
-
-  void _nextQuestion() {
-    if (_selectedAnswerIndex != null) {
-      final Question currentQuestion = dummyQuestions[_currentQuestionIndex];
-      if (_selectedAnswerIndex == currentQuestion.correctAnswerIndex) {
-        _score++;
-      }
-
-      if (_currentQuestionIndex < dummyQuestions.length - 1) {
-        // Pindah ke pertanyaan berikutnya
-        setState(() {
-          _currentQuestionIndex++;
-          _selectedAnswerIndex = null; // Reset pilihan
-        });
-      } else {
-        Navigator.pushReplacementNamed(
-            context,
-            AppRoutes.score, // <-- Ganti ini
-            arguments: {
-              'score': _score,
-              'totalQuestions': dummyQuestions.length,
-              'playerName': playerName,
-            },
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Silakan pilih satu jawaban!'),
-          backgroundColor: AppColors.incorrect,
-        ),
-      );
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final String playerName = ModalRoute.of(context)!.settings.arguments as String;
-    final Question question = dummyQuestions[_currentQuestionIndex];
-    final int totalQuestions = dummyQuestions.length;
+    final quizProvider = context.watch<QuizProvider>();
+
+    final question = quizProvider.currentQuestion;
+    final totalQuestions = quizProvider.totalQuestions;
+    final currentQuestionIndex = quizProvider.currentQuestionIndex;
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
@@ -84,7 +34,7 @@ class _QuizScreenState extends State<QuizScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Pertanyaan ${_currentQuestionIndex + 1} dari $totalQuestions',
+              'Pertanyaan ${currentQuestionIndex + 1} dari $totalQuestions',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Urbanist',
@@ -97,7 +47,7 @@ class _QuizScreenState extends State<QuizScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: LinearProgressIndicator(
-                value: (_currentQuestionIndex + 1) / totalQuestions,
+                value: (currentQuestionIndex + 1) / totalQuestions,
                 minHeight: 10,
                 backgroundColor: Colors.grey.shade300,
                 valueColor: const AlwaysStoppedAnimation(AppColors.primary),
@@ -120,10 +70,10 @@ class _QuizScreenState extends State<QuizScreen> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12.0),
                 child: GestureDetector(
-                  onTap: () => _selectAnswer(index),
+                  onTap: () => context.read<QuizProvider>().selectAnswer(index),
                   child: AnswerOptionCard(
                     optionText: question.options[index],
-                    isSelected: _selectedAnswerIndex == index,
+                    isSelected: quizProvider.selectedAnswerIndex == index,
                   ),
                 ),
               );
@@ -132,8 +82,20 @@ class _QuizScreenState extends State<QuizScreen> {
             const Spacer(),
 
             CustomButton(
-              text: (_currentQuestionIndex == totalQuestions - 1) ? 'Selesai' : 'Selanjutnya',
-              onPressed: _nextQuestion,
+              text: quizProvider.isLastQuestion ? 'Selesai' : 'Selanjutnya',
+              onPressed: () {
+                // Validasi harus dilakukan di sini sebelum memanggil provider.
+                if (quizProvider.selectedAnswerIndex != null) {
+                  context.read<QuizProvider>().nextQuestion(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Silakan pilih satu jawaban!'),
+                      backgroundColor: AppColors.incorrect,
+                    ),
+                  );
+                }
+              },
             ),
           ],
         ),
