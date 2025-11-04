@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app/core/app_colors.dart';
-import 'package:quiz_app/widgets/custom_button.dart';
-import 'package:quiz_app/config/app_routes.dart';
 import 'package:provider/provider.dart';
+import 'package:quiz_app/config/app_routes.dart';
 import 'package:quiz_app/providers/quiz_provider.dart';
+import 'package:quiz_app/providers/theme_provider.dart';
+import 'package:quiz_app/widgets/custom_button.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -23,11 +23,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = false;
-    final Color textColor = isDarkMode ? AppColors.textDark : AppColors.textLight;
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: isDarkMode ? AppColors.backgroundDark : AppColors.backgroundLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -35,6 +34,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Theme toggle switch
+              Align(
+                alignment: Alignment.topRight,
+                child: Switch(
+                  value: theme.brightness == Brightness.dark,
+                  onChanged: (value) {
+                    context.read<ThemeProvider>().toggleTheme(value);
+                  },
+                ),
+              ),
+              const Spacer(),
+
               Text(
                 'Quiz Master',
                 textAlign: TextAlign.center,
@@ -42,7 +53,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   fontFamily: 'Urbanist',
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: textColor,
+                  color: theme.colorScheme.onBackground,
                 ),
               ),
               const SizedBox(height: 16),
@@ -52,30 +63,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 style: TextStyle(
                   fontFamily: 'Urbanist',
                   fontSize: 18,
-                  color: textColor.withOpacity(0.7),
+                  color: theme.colorScheme.onBackground.withOpacity(0.7),
                 ),
               ),
               const SizedBox(height: 48),
 
+              // TextField sekarang otomatis mendapat style dari AppTheme
               TextField(
                 controller: _nameController,
-                decoration: InputDecoration(
-                    hintText: 'Masukkan Namamu',
-                    filled: true,
-                    fillColor: isDarkMode ? AppColors.cardDark : AppColors.cardLight,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-                    hintStyle: TextStyle(
-                      fontFamily: 'Urbanist',
-                      color: textColor.withOpacity(0.5),
-                    )
+                decoration: const InputDecoration(
+                  hintText: 'Masukkan Namamu',
                 ),
                 style: TextStyle(
                   fontFamily: 'Urbanist',
-                  color: textColor,
+                  color: theme.colorScheme.onBackground,
                 ),
               ),
               const SizedBox(height: 24),
@@ -88,18 +89,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     final quizProvider = context.read<QuizProvider>();
                     quizProvider.resetQuiz();
                     quizProvider.setPlayerName(playerName);
+
                     Navigator.pushNamed(context, AppRoutes.quiz);
                   } else {
-                    // Tampilkan pesan error jika nama kosong
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Nama tidak boleh kosong!'),
-                        backgroundColor: AppColors.incorrect,
+                      SnackBar(
+                        content: const Text('Nama tidak boleh kosong!'),
+                        backgroundColor: theme.colorScheme.error,
                       ),
                     );
                   }
                 },
               ),
+              const Spacer(),
             ],
           ),
         ),

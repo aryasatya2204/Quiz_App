@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app/core/app_colors.dart';
 
 class AnswerOptionCard extends StatelessWidget {
   final String optionText;
@@ -13,8 +12,15 @@ class AnswerOptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color borderColor = isSelected ? AppColors.primary : Colors.grey.shade300;
-    Color backgroundColor = isSelected ? AppColors.primary.withOpacity(0.1) : AppColors.cardLight;
+    final theme = Theme.of(context);
+
+    // Warna ditentukan secara dinamis berdasarkan tema
+    Color borderColor = isSelected
+        ? theme.colorScheme.primary
+        : theme.dividerColor.withOpacity(0.5);
+    Color backgroundColor = isSelected
+        ? theme.colorScheme.primary.withOpacity(0.1)
+        : theme.colorScheme.surface;
 
     return Card(
       elevation: 0,
@@ -28,19 +34,21 @@ class AnswerOptionCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              optionText,
-              style: const TextStyle(
-                fontFamily: 'Urbanist',
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+            Expanded(
+              child: Text(
+                optionText,
+                style: TextStyle(
+                  fontFamily: 'Urbanist',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ),
-            // Ikon centang
             if (isSelected)
-              const Icon(
+              Icon(
                 Icons.check_circle,
-                color: AppColors.primary,
+                color: theme.colorScheme.primary,
               ),
           ],
         ),

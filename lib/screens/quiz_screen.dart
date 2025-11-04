@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quiz_app/config/app_routes.dart';
-import 'package:quiz_app/core/app_colors.dart';
 import 'package:quiz_app/providers/quiz_provider.dart';
 import 'package:quiz_app/widgets/answer_option_card.dart';
 import 'package:quiz_app/widgets/custom_button.dart';
@@ -12,21 +10,16 @@ class QuizScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final quizProvider = context.watch<QuizProvider>();
+    final theme = Theme.of(context);
 
     final question = quizProvider.currentQuestion;
     final totalQuestions = quizProvider.totalQuestions;
     final currentQuestionIndex = quizProvider.currentQuestionIndex;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      // AppBar otomatis mengambil style dari AppTheme
       appBar: AppBar(
-        title: const Text(
-          'Quiz Flutter',
-          style: TextStyle(fontFamily: 'Urbanist', fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: AppColors.backgroundLight,
-        elevation: 0,
-        centerTitle: true,
+        title: const Text('Quiz Flutter'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -40,7 +33,7 @@ class QuizScreen extends StatelessWidget {
                 fontFamily: 'Urbanist',
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: AppColors.primary,
+                color: theme.colorScheme.primary,
               ),
             ),
             const SizedBox(height: 8),
@@ -49,8 +42,8 @@ class QuizScreen extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: (currentQuestionIndex + 1) / totalQuestions,
                 minHeight: 10,
-                backgroundColor: Colors.grey.shade300,
-                valueColor: const AlwaysStoppedAnimation(AppColors.primary),
+                backgroundColor: theme.colorScheme.surface,
+                valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
               ),
             ),
             const SizedBox(height: 32),
@@ -58,10 +51,11 @@ class QuizScreen extends StatelessWidget {
             Text(
               question.text,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'Urbanist',
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onBackground,
               ),
             ),
             const SizedBox(height: 32),
@@ -84,14 +78,13 @@ class QuizScreen extends StatelessWidget {
             CustomButton(
               text: quizProvider.isLastQuestion ? 'Selesai' : 'Selanjutnya',
               onPressed: () {
-                // Validasi harus dilakukan di sini sebelum memanggil provider.
                 if (quizProvider.selectedAnswerIndex != null) {
                   context.read<QuizProvider>().nextQuestion(context);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Silakan pilih satu jawaban!'),
-                      backgroundColor: AppColors.incorrect,
+                    SnackBar(
+                      content: const Text('Silakan pilih satu jawaban!'),
+                      backgroundColor: theme.colorScheme.error,
                     ),
                   );
                 }
