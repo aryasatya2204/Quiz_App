@@ -4,18 +4,22 @@ import 'package:quiz_app/data/dummy_questions.dart';
 import 'package:quiz_app/models/question_model.dart';
 import 'package:quiz_app/widgets/answer_option_card.dart';
 import 'package:quiz_app/widgets/custom_button.dart';
+import 'package:quiz_app/config/app_routes.dart';
+
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({Key? key}) : super(key: key);
 
   @override
   _QuizScreenState createState() => _QuizScreenState();
+
 }
 
 class _QuizScreenState extends State<QuizScreen> {
   int _currentQuestionIndex = 0;
   int? _selectedAnswerIndex;
   int _score = 0;
+  String? playerName;
 
   void _selectAnswer(int index) {
     setState(() {
@@ -37,8 +41,15 @@ class _QuizScreenState extends State<QuizScreen> {
           _selectedAnswerIndex = null; // Reset pilihan
         });
       } else {
-        // Kuis Selesai
-        print('Kuis Selesai! Skor: $_score');
+        Navigator.pushReplacementNamed(
+            context,
+            AppRoutes.score, // <-- Ganti ini
+            arguments: {
+              'score': _score,
+              'totalQuestions': dummyQuestions.length,
+              'playerName': playerName,
+            },
+        );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -52,6 +63,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String playerName = ModalRoute.of(context)!.settings.arguments as String;
     final Question question = dummyQuestions[_currentQuestionIndex];
     final int totalQuestions = dummyQuestions.length;
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/screens/welcome_screen.dart';
 
 import 'core/app_colors.dart';
+import 'package:quiz_app/config/app_routes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Urbanist',
         scaffoldBackgroundColor: AppColors.backgroundLight,
       ),
-      home: const WelcomeScreen(), // Mulai dari WelcomeScreen
+      initialRoute: AppRoutes.welcome,
+      routes: AppRoutes.routes,
     );
   }
 }

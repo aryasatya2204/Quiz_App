@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/core/app_colors.dart';
 import 'package:quiz_app/widgets/custom_button.dart';
+import 'package:quiz_app/config/app_routes.dart';
 
 class ScoreScreen extends StatelessWidget {
   const ScoreScreen({Key? key}) : super(key: key);
@@ -60,6 +61,11 @@ class ScoreScreen extends StatelessWidget {
               CustomButton(
                 text: 'Main Lagi',
                 onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRoutes.welcome,
+                        (route) => false,
+                  );
                 },
               ),
             ],
