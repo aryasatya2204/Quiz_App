@@ -14,7 +14,6 @@ class AnswerOptionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Warna ditentukan secara dinamis berdasarkan tema
     Color borderColor = isSelected
         ? theme.colorScheme.primary
         : theme.dividerColor.withOpacity(0.5);
@@ -34,7 +33,7 @@ class AnswerOptionCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
+            Expanded( // Expanded membantu text wrap jika panjang
               child: Text(
                 optionText,
                 style: TextStyle(

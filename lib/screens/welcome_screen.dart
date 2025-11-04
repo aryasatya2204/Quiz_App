@@ -28,81 +28,82 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Theme toggle switch
-              Align(
-                alignment: Alignment.topRight,
-                child: Switch(
-                  value: theme.brightness == Brightness.dark,
-                  onChanged: (value) {
-                    context.read<ThemeProvider>().toggleTheme(value);
-                  },
-                ),
-              ),
-              const Spacer(),
+        // Konten dibungkus Center dan ConstrainedBox agar rapi di layar lebar (tablet)
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Switch(
+                      value: theme.brightness == Brightness.dark,
+                      onChanged: (value) {
+                        context.read<ThemeProvider>().toggleTheme(value);
+                      },
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    'Quiz Master',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Urbanist',
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.onBackground,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Tantang pengetahuanmu dan jadilah master kuis!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Urbanist',
+                      fontSize: 18,
+                      color: theme.colorScheme.onBackground.withOpacity(0.7),
+                    ),
+                  ),
+                  const SizedBox(height: 48),
+                  TextField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      hintText: 'Masukkan Namamu',
+                    ),
+                    style: TextStyle(
+                      fontFamily: 'Urbanist',
+                      color: theme.colorScheme.onBackground,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  CustomButton(
+                    text: 'Mulai Kuis',
+                    onPressed: () {
+                      final String playerName = _nameController.text;
+                      if (playerName.trim().isNotEmpty) {
+                        final quizProvider = context.read<QuizProvider>();
+                        quizProvider.resetQuiz();
+                        quizProvider.setPlayerName(playerName);
 
-              Text(
-                'Quiz Master',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Urbanist',
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.onBackground,
-                ),
+                        Navigator.pushNamed(context, AppRoutes.quiz);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text('Nama tidak boleh kosong!'),
+                            backgroundColor: theme.colorScheme.error,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  const Spacer(),
+                ],
               ),
-              const SizedBox(height: 16),
-              Text(
-                'Tantang pengetahuanmu dan jadilah master kuis!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Urbanist',
-                  fontSize: 18,
-                  color: theme.colorScheme.onBackground.withOpacity(0.7),
-                ),
-              ),
-              const SizedBox(height: 48),
-
-              // TextField sekarang otomatis mendapat style dari AppTheme
-              TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  hintText: 'Masukkan Namamu',
-                ),
-                style: TextStyle(
-                  fontFamily: 'Urbanist',
-                  color: theme.colorScheme.onBackground,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              CustomButton(
-                text: 'Mulai Kuis',
-                onPressed: () {
-                  final String playerName = _nameController.text;
-                  if (playerName.trim().isNotEmpty) {
-                    final quizProvider = context.read<QuizProvider>();
-                    quizProvider.resetQuiz();
-                    quizProvider.setPlayerName(playerName);
-
-                    Navigator.pushNamed(context, AppRoutes.quiz);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text('Nama tidak boleh kosong!'),
-                        backgroundColor: theme.colorScheme.error,
-                      ),
-                    );
-                  }
-                },
-              ),
-              const Spacer(),
-            ],
+            ),
           ),
         ),
       ),

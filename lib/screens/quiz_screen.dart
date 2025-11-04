@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quiz_app/models/question_model.dart';
 import 'package:quiz_app/providers/quiz_provider.dart';
 import 'package:quiz_app/widgets/answer_option_card.dart';
 import 'package:quiz_app/widgets/custom_button.dart';
 
 class QuizScreen extends StatelessWidget {
   const QuizScreen({Key? key}) : super(key: key);
+
+  // Widget helper untuk build opsi jawaban (menghindari duplikasi kode)
+  Widget _buildAnswerOption(BuildContext context, QuizProvider quizProvider, Question question, int index) {
+    return GestureDetector(
+      onTap: () => context.read<QuizProvider>().selectAnswer(index),
+      child: AnswerOptionCard(
+        optionText: question.options[index],
+        isSelected: quizProvider.selectedAnswerIndex == index,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +29,6 @@ class QuizScreen extends StatelessWidget {
     final currentQuestionIndex = quizProvider.currentQuestionIndex;
 
     return Scaffold(
-      // AppBar otomatis mengambil style dari AppTheme
       appBar: AppBar(
         title: const Text('Quiz Flutter'),
       ),
@@ -60,20 +71,43 @@ class QuizScreen extends StatelessWidget {
             ),
             const SizedBox(height: 32),
 
-            ...List.generate(question.options.length, (index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12.0),
-                child: GestureDetector(
-                  onTap: () => context.read<QuizProvider>().selectAnswer(index),
-                  child: AnswerOptionCard(
-                    optionText: question.options[index],
-                    isSelected: quizProvider.selectedAnswerIndex == index,
-                  ),
-                ),
-              );
-            }),
+            // Menggunakan Expanded + LayoutBuilder untuk layout adaptif
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // Cek lebar parent
+                  if (constraints.maxWidth > 600) {
+                    // Tampilan Tablet: Grid 2 kolom
+                    return GridView.builder(
+                      itemCount: question.options.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 4 / 1, // Rasio lebar:tinggi
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                      ),
+                      itemBuilder: (context, index) {
+                        return _buildAnswerOption(context, quizProvider, question, index);
+                      },
+                    );
+                  } else {
+                    // Tampilan HP: List 1 kolom
+                    return ListView.builder(
+                      itemCount: question.options.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: _buildAnswerOption(context, quizProvider, question, index),
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
 
-            const Spacer(),
+            // const Spacer(), // Dihapus karena sudah diganti Expanded
+            const SizedBox(height: 24), // Padding sebelum tombol
 
             CustomButton(
               text: quizProvider.isLastQuestion ? 'Selesai' : 'Selanjutnya',

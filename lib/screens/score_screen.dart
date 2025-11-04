@@ -19,58 +19,64 @@ class ScoreScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Kuis Selesai, $playerName!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Urbanist',
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.onBackground,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Skor Akhir Kamu',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Urbanist',
-                  fontSize: 18,
-                  color: theme.colorScheme.onBackground.withOpacity(0.7),
-                ),
-              ),
-              const SizedBox(height: 24),
+        // Konten dibungkus Center dan ConstrainedBox agar rapi di layar lebar (tablet)
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Kuis Selesai, $playerName!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Urbanist',
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.onBackground,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Skor Akhir Kamu',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Urbanist',
+                      fontSize: 18,
+                      color: theme.colorScheme.onBackground.withOpacity(0.7),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
 
-              Text(
-                '$score/$totalQuestions',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Urbanist',
-                  fontSize: 64,
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
+                  Text(
+                    '$score/$totalQuestions',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Urbanist',
+                      fontSize: 64,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
 
-              const SizedBox(height: 48),
+                  const SizedBox(height: 48),
 
-              CustomButton(
-                text: 'Main Lagi',
-                onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    AppRoutes.welcome,
-                        (route) => false,
-                  );
-                },
+                  CustomButton(
+                    text: 'Main Lagi',
+                    onPressed: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        AppRoutes.welcome,
+                            (route) => false,
+                      );
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
