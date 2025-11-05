@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:quiz_app/providers/theme_provider.dart';
@@ -29,7 +28,6 @@ class MyApp extends StatelessWidget {
       title: 'Quiz App',
       debugShowCheckedModeBanner: false,
 
-      // 6. Atur properti tema
       themeMode: themeProvider.themeMode,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
