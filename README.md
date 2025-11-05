@@ -18,7 +18,6 @@ Aplikasi ini adalah kuis pilihan ganda yang dibuat menggunakan Flutter sebagai p
 
 ## Screenshot/Video Aplikasi
 
-*(Catatan: Anda harus mengambil screenshot, menambahkannya ke folder di repository ini (misal: buat folder `screenshots/`), lalu ganti `LINK_KE_SCREENSHOT_ANDA` di bawah dengan path yang benar, contoh: `screenshots/welcome_light.png`)*
 
 **Light Mode**
 | Welcome Screen | Quiz Screen (HP) | Quiz Screen (Tablet) | Score Screen |
